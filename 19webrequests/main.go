@@ -11,7 +11,7 @@ func main() {
 }
 
 func HandleGetRequests() {
-	const url = "http://localhost:8000/get"
+	const url = "https://nithin-me-git-preproduction-nithink142s-projects.vercel.app/"
 
 	response, err := http.Get(url)
 
@@ -19,11 +19,11 @@ func HandleGetRequests() {
 		panic(err)
 	}
 
-	defer response.Body.Close()
-
 	fmt.Println("status code", response.StatusCode)
 
-	content, _ := io.ReadAll(response.Body)
+	databytes, _ := io.ReadAll(response.Body)
+	fmt.Println(string(databytes))
 
-	fmt.Println(string(content))
+	// we have to mannually close connection
+	defer response.Body.Close()
 }
