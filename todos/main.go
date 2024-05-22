@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,6 +22,7 @@ func main() {
 	router := gin.Default()
 	router.GET("/todos", getTodos)
 	router.POST("/todos", createTodo)
+	router.DELETE("/todos/:id", deleteTodo)
 	router.Run(":8080")
 }
 
@@ -41,4 +44,24 @@ func createTodo(c *gin.Context) {
 	nextTodoID++
 	todos = append(todos, newTodo)
 	c.IndentedJSON(http.StatusCreated, newTodo)
+}
+
+func deleteTodo(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": "Invalid Todo ID"})
+		return
+	}
+
+	for i, todo := range todos {
+		if todo.ID == id {
+			fmt.Println(todos[:i])
+			fmt.Println(todos[i+1:])
+			todos = append(todos[:i], todos[i+1:]...)
+			c.IndentedJSON(http.StatusOK, gin.H{"message": "Todo deleted successfully"})
+			return
+		}
+	}
+
+	c.IndentedJSON(http.StatusNotFound, gin.H{"error": "Todo not found"})
 }
