@@ -20,6 +20,9 @@ var nextTodoID = 1
 
 func main() {
 	router := gin.Default()
+	router.GET("/", func(c *gin.Context) {
+		c.String(http.StatusOK, "here we GO!!")
+	})
 	router.GET("/todos", getTodos)
 	router.POST("/todos", createTodo)
 	router.PUT("/todos/:id", editTodo)
