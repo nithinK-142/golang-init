@@ -27,7 +27,7 @@ func main() {
 	}
 
 	http.HandleFunc("/", rootHandler)
-	http.HandleFunc("/todos", todosHandler)
+	http.HandleFunc("/todos/", todosHandler)
 
 	log.Printf("Server listening on :%s", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
