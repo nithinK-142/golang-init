@@ -22,6 +22,7 @@ func main() {
 	router := gin.Default()
 	router.GET("/todos", getTodos)
 	router.POST("/todos", createTodo)
+	router.PUT("/todos/:id", editTodo)
 	router.DELETE("/todos/:id", deleteTodo)
 	router.Run(":8080")
 }
@@ -44,6 +45,32 @@ func createTodo(c *gin.Context) {
 	nextTodoID++
 	todos = append(todos, newTodo)
 	c.IndentedJSON(http.StatusCreated, newTodo)
+}
+
+func editTodo(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": "Invalid Todo ID"})
+		return
+	}
+
+	var editedTodo Todo
+	// catch error when creating newtodo
+	if err := c.BindJSON(&editedTodo); err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		return
+	}
+
+	for i, todo := range todos {
+		if todo.ID == id {
+			todos[i] = editedTodo
+			todos[i].ID = id
+			c.IndentedJSON(http.StatusOK, gin.H{"message": "Todo edited successfully"})
+			return
+		}
+	}
+
+	c.IndentedJSON(http.StatusNotFound, gin.H{"error": "Todo not found"})
 }
 
 func deleteTodo(c *gin.Context) {
