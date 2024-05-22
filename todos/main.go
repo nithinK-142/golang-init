@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -19,6 +20,11 @@ var todos = []Todo{}
 var nextTodoID = 1
 
 func main() {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
 	router := gin.Default()
 	router.GET("/", func(c *gin.Context) {
 		c.String(http.StatusOK, "here we GO!!")
@@ -27,7 +33,7 @@ func main() {
 	router.POST("/todos", createTodo)
 	router.PUT("/todos/:id", editTodo)
 	router.DELETE("/todos/:id", deleteTodo)
-	router.Run(":8080")
+	router.Run(":" + port)
 }
 
 func getTodos(c *gin.Context) {
